@@ -3,7 +3,6 @@ from cvzone.HandTrackingModule import HandDetector
 import numpy as np
 import math
 import time
-import os
 
 def draw_hand(imgCrop, imgWhite, imgSize, offset=(0,0)):
     imgCropShape = imgCrop.shape
