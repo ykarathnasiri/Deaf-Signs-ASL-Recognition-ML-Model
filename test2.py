@@ -2,6 +2,7 @@ import cv2
 from cvzone.HandTrackingModule import HandDetector
 import numpy as np
 import math
+import time
 
 def draw_hand(imgCrop, imgWhite, imgSize, offset=(0, 0)):
     imgCropShape = imgCrop.shape
@@ -65,5 +66,12 @@ while True:
             cv2.imshow("ImageWhite", imgWhite)
 
     cv2.imshow("Image", img)
-    cv2.waitKey(1)
+    key = cv2.waitKey(1)
+    if key == ord("s"):
+        counter += 1
+        cv2.imwrite(f'{folder}/Image_{time.time()}.jpg', imgWhite)
+    elif key == ord("s"):
+        break
 
+cap.release()
+cv2.destroyAllWindows()
