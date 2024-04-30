@@ -16,14 +16,14 @@ def draw_hand(imgCrop, imgWhite, imgSize, offset=(0,0)):
             wGap = math.ceil((imgSize - wCal) / 2)
             imgWhite[:, wGap + offset[1]:wCal + wGap + offset[1]] = imgResize
 
-        else:
-            k = imgSize / imgCropShape[1]
-            hCal = math.ceil(k * imgCropShape[0])
-            imgResize = cv2.resize(imgCrop, (imgSize, hCal))
-            hGap = math.ceil((imgSize - hCal) / 2)
-            imgWhite[hGap + offset[0]:hCal + hGap + offset[0], :] = imgResize
+    else:
+        k = imgSize / imgCropShape[1]
+        hCal = math.ceil(k * imgCropShape[0])
+        imgResize = cv2.resize(imgCrop, (imgSize, hCal))
+        hGap = math.ceil((imgSize - hCal) / 2)
+        imgWhite[hGap + offset[0]:hCal + hGap + offset[0], :] = imgResize
 
-        return imgWhite
+    return imgWhite
 
 cap = cv2.VideoCapture(0)
 detector = HandDetector(maxHands=2) #detect up to 2 hands
