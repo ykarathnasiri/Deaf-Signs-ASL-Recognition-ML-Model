@@ -72,13 +72,12 @@ while True:
             label_height += 10
 
             cv2.rectangle(imgOutput, (x - offset, y - offset - label_height - 10),
-                          (x - offset + label_width, y - offset), (255, 0, 0), cv2.FILLED)
-
+                          (x - offset + label_width, y - offset), (0, 255, 255), cv2.FILLED)
             cv2.putText(imgOutput, label_text, (x - offset, y - offset - 5), cv2.FONT_HERSHEY_COMPLEX, 1.7,
-                        (255, 0, 255), 2)
-
+                        (0, 0, 0), 2)
             cv2.rectangle(imgOutput, (x - offset, y - offset),
-                          (x + w + offset, y + h + offset), (255, 0, 255), 2)
+                          (x + w + offset, y + h + offset), (0, 255, 0), 2)
+
             cv2.imshow("ImageWhite", imgWhite)
 
         elif len(hands) == 1:  # If one hand is detected
@@ -89,12 +88,28 @@ while True:
             cv2.imshow("ImageWhite", imgWhite)
 
             #Draw bounding box and prediction lable on imgOutput for single hand
+
+            """
             prediction, index = classifier.getPrediction(imgWhite, draw=False)
             cv2.rectangle(imgOutput, (x - offset, y - offset - 50),
                           (x - offset + 90, y - offset - 50 + 50), (255, 0, 0), cv2.FILLED)
             cv2.putText(imgOutput, labels[index], (x, y - 26), cv2.FONT_HERSHEY_COMPLEX, 1.7, (255, 0, 255), 2)
             cv2.rectangle(imgOutput, (x - offset, y - offset),
                           (x + w + offset, y + h + offset), (255, 0, 255), 2)
+                          """
+            prediction, index = classifier.getPrediction(imgWhite, draw=False)
+            label_text = labels[index]
+            (label_width, label_height), baseline = cv2.getTextSize(label_text, cv2.FONT_HERSHEY_COMPLEX, 1.7, 2)
+
+            label_width += 10
+            label_height += 10
+
+            cv2.rectangle(imgOutput, (x - offset, y - offset - label_height - 10),
+                          (x - offset + label_width, y - offset), (0, 255, 255), cv2.FILLED)
+            cv2.putText(imgOutput, label_text, (x - offset, y - offset - 10), cv2.FONT_HERSHEY_COMPLEX, 1.7,
+                        (0, 0, 0), 2)
+            cv2.rectangle(imgOutput, (x - offset, y - offset),
+                          (x + w + offset, y + h + offset), (0, 255, 0), 2)
 
             cv2.imshow("ImageWhite", imgWhite)
 
