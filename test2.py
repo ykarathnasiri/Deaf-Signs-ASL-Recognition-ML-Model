@@ -15,7 +15,7 @@ def draw_hand(imgCrop, imgWhite, imgSize, offset=(0, 0)):
         imgResize = cv2.resize(imgCrop, (wCal, imgSize))
         wGap = math.ceil((imgSize - wCal) / 2)
         imgWhite[:, wGap + offset[1]:wCal + wGap + offset[1]] = imgResize
-        prediction, index = classifier.getPrediction(img)
+        prediction, index = classifier.getPrediction(imgWhite)
         print(prediction, index)
 
     else:
@@ -24,6 +24,8 @@ def draw_hand(imgCrop, imgWhite, imgSize, offset=(0, 0)):
         imgResize = cv2.resize(imgCrop, (imgSize, hCal))
         hGap = math.ceil((imgSize - hCal) / 2)
         imgWhite[hGap + offset[0]:hCal + hGap + offset[0], :] = imgResize
+        prediction, index = classifier.getPrediction(imgWhite)
+        print(prediction, index)
 
     return imgWhite
 
@@ -35,13 +37,11 @@ classifier = Classifier("Model/keras_model.h5", "Model/labels.txt")
 offset = 20
 imgSize = 300
 
-folder = "Data/A"
-counter = 0
-
-labels = ["A", "B", "C"]
+labels = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "Hello", "I Love You", "Thanks", "Okay", "Sorry"]
 
 while True:
     success, img = cap.read()
+    imgOutput = img.copy()
     hands, img = detector.findHands(img)
 
     if hands:
@@ -61,7 +61,16 @@ while True:
 
             # Crop the frame with both hands
             imgCrop = img[y - offset:y + h + offset, x - offset:x + w + offset]
-            imgWhite = draw_hand(imgCrop, imgWhite, imgSize)
+            imgWhite = draw_hand(imgCrop, imgWhite, imgSize, offset= (0, 0))
+
+            # Show prediction and bounding box for both hands
+            prediction, index = classifier.getPrediction(imgWhite, draw=False)
+            cv2.rectangle(imgOutput, (x - offset, y - offset - 50),
+                          (x - offset + 90, y - offset - 50 + 50), (255, 0, 0), cv2.FILLED)
+            cv2.putText(imgOutput, labels[index], (x, y - 26), cv2.FONT_HERSHEY_COMPLEX, 1.7, (255, 0, 255), 2)
+            cv2.rectangle(imgOutput, (x - offset, y - offset),
+                          (x + w + offset, y + h + offset), (255, 0, 255), 2)
+
             cv2.imshow("ImageWhite", imgWhite)
 
         elif len(hands) == 1:  # If one hand is detected
@@ -71,5 +80,15 @@ while True:
             imgWhite = draw_hand(imgCrop, imgWhite, imgSize)
             cv2.imshow("ImageWhite", imgWhite)
 
-    cv2.imshow("Image", img)
+            #Draw bounding box and prediction lable on imgOutput for single hand
+            prediction, index = classifier.getPrediction(imgWhite, draw=False)
+            cv2.rectangle(imgOutput, (x - offset, y - offset - 50),
+                          (x - offset + 90, y - offset - 50 + 50), (255, 0, 0), cv2.FILLED)
+            cv2.putText(imgOutput, labels[index], (x, y - 26), cv2.FONT_HERSHEY_COMPLEX, 1.7, (255, 0, 255), 2)
+            cv2.rectangle(imgOutput, (x - offset, y - offset),
+                          (x + w + offset, y + h + offset), (255, 0, 255), 2)
+
+            cv2.imshow("ImageWhite", imgWhite)
+
+    cv2.imshow("Image", imgOutput)
     cv2.waitKey(1)

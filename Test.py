@@ -37,7 +37,7 @@ classifier = Classifier("Model/keras_model.h5", "Model/labels.txt")
 offset = 20
 imgSize = 300
 
-labels = ["A", "B", "C","D", "E", "F","G", "H", "I","J", "K", "L","M", "N", "P","Q", "R", "S","T", "U", "V","W", "X", "Y","Z", "Hello", "Thank You","I Love You", "Sorry", "No","Okay"]
+labels = ["A", "B", "C", "D", "E", "F", "G", "H", "Hello", "I Love You", "Okay", "Sorry", "Thanks",]
 
 while True:
     success, img = cap.read()
@@ -65,12 +65,20 @@ while True:
 
             # Show prediction and bounding box for both hands
             prediction, index = classifier.getPrediction(imgWhite, draw=False)
-            cv2.rectangle(imgOutput, (x - offset, y - offset - 50),
-                          (x - offset + 90, y - offset - 50 + 50), (255, 0, 0), cv2.FILLED)
-            cv2.putText(imgOutput, labels[index], (x, y - 26), cv2.FONT_HERSHEY_COMPLEX, 1.7, (255, 0, 255), 2)
+            label_text = labels[index]
+            (label_width, label_height), baseline = cv2.getTextSize(label_text, cv2.FONT_HERSHEY_COMPLEX, 1.7, 2)
+
+            label_width += 10
+            label_height += 10
+
+            cv2.rectangle(imgOutput, (x - offset, y - offset - label_height - 10),
+                          (x - offset + label_width, y - offset), (255, 0, 0), cv2.FILLED)
+
+            cv2.putText(imgOutput, label_text, (x - offset, y - offset - 5), cv2.FONT_HERSHEY_COMPLEX, 1.7,
+                        (255, 0, 255), 2)
+
             cv2.rectangle(imgOutput, (x - offset, y - offset),
                           (x + w + offset, y + h + offset), (255, 0, 255), 2)
-
             cv2.imshow("ImageWhite", imgWhite)
 
         elif len(hands) == 1:  # If one hand is detected
